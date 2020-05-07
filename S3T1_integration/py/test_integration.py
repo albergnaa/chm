@@ -27,7 +27,7 @@ def test_quad_degree():
         p = Monome(deg)
         y0 = p[x0, x1]
 
-        max_node_count = range(1, max_degree+1)
+        max_node_count = range(1, max_degree + 1)
 
         Y = [quad(p, x0, x1, np.linspace(x0, x1, node_count)) for node_count in max_node_count]
         # Y = [quad(p, x0, x1, x0 + (x1-x0) * np.random.random(node_count)) for node_count in max_node_count]
@@ -133,10 +133,10 @@ def test_composite_quad(n_nodes):
         k, b = np.polyfit(x[ind], accuracy[ind], 1)
         aitken_degree = aitken(*Y[0:6:2], L ** 2)
 
-        plt.subplot(1, 2, i+1)
+        plt.subplot(1, 2, i + 1)
         plt.title(f'{n_nodes}-node CQ for x^{degree}')
-        plt.plot(x, k*x+b, 'b:', label=f'{k:.2f}*x+{b:.2f}')
-        plt.plot(x, aitken_degree*x+b, 'm:', label=f'aitken ({aitken_degree:.2f})')
+        plt.plot(x, k * x + b, 'b:', label=f'{k:.2f}*x+{b:.2f}')
+        plt.plot(x, aitken_degree * x + b, 'm:', label=f'aitken ({aitken_degree:.2f})')
         plt.plot(x, accuracy, 'kh', label=f'accuracy for x^{degree}')
         plt.xlabel('log10(node count)')
         plt.ylabel('accuracy')
@@ -152,7 +152,7 @@ def test_composite_quad(n_nodes):
 @pytest.mark.parametrize('v', [2, 3, 5, 6])
 def test_composite_quad_degree(v):
     """
-    Q: convergence maybe somewhat between 3 and 4, why?
+    Q: i
     """
     from .variants import params
 
@@ -160,11 +160,11 @@ def test_composite_quad_degree(v):
     a, b, alpha, beta, f = params(v)
     x0, x1 = a, b
     # a, b = -10, 10
-    exact = sp_quad(lambda x: f(x) / (x-a)**alpha / (b-x)**beta, x0, x1)[0]
+    exact = sp_quad(lambda x: f(x) / (x - a) ** alpha / (b - x) ** beta, x0, x1)[0]
 
     # plot weights
     xs = np.linspace(x0, x1, 101)
-    ys = 1 / ((xs-a)**alpha * (b-xs)**beta)
+    ys = 1 / ((xs - a) ** alpha * (b - xs) ** beta)
     plt.subplot(1, 2, 1)
     plt.plot(xs, ys, label='weights')
     ax = list(plt.axis())
@@ -203,8 +203,8 @@ def test_integrate():
     for tol in 10. ** np.arange(-9, -2):
         s, err = integrate(p, x0, x1, tol=tol)
 
-        print(f'Check for tol {tol:.2e}: res = {s-err:.6f} .. {s:.6f} .. {s+err:.6f}')
+        print(f'Check for tol {tol:.2e}: res = {s - err:.6f} .. {s:.6f} .. {s + err:.6f}')
 
-        assert err >= 0,                            'estimated error should be >= 0'
-        assert np.abs(p[x0, x1] - s) <= 1.1*err,    'actual error should be <= estimated error + 10%'
-        assert np.abs(p[x0, x1] - s) <= tol,        'actual error should be <= tolerance'
+        assert err >= 0, 'estimated error should be >= 0'
+        assert np.abs(p[x0, x1] - s) <= 1.1 * err, 'actual error should be <= estimated error + 10%'
+        assert np.abs(p[x0, x1] - s) <= tol, 'actual error should be <= tolerance'
