@@ -28,8 +28,9 @@ def test_quad_degree():
         y0 = p[x0, x1]
 
         max_node_count = range(1, max_degree + 1)
-
         Y = [quad(p, x0, x1, np.linspace(x0, x1, node_count)) for node_count in max_node_count]
+        xs = [(x0 + x1) / 2]
+        Y[0] = quad(p, x0, x1, xs)
         # Y = [quad(p, x0, x1, x0 + (x1-x0) * np.random.random(node_count)) for node_count in max_node_count]
         accuracy = get_log_error(Y, y0 * np.ones_like(Y))
         accuracy[np.isinf(accuracy)] = 17
@@ -126,7 +127,13 @@ def test_composite_quad(n_nodes):
         p = Monome(degree)
         Y = [composite_quad(p, x0, x1, n_intervals=n, n_nodes=n_nodes) for n in n_intervals]
         accuracy = get_log_error(Y, p[x0, x1] * np.ones_like(Y))
+
+        # print(abs(Y-p[x0, x1] * np.ones_like(Y)))
+        # for i in range(len(np.array(accuracy))):
+        #     print(10**-accuracy[i])
+
         x = np.log10(n_intervals)
+
 
         # check convergence
         ind = np.isfinite(x) & np.isfinite(accuracy)
@@ -176,14 +183,14 @@ def test_composite_quad_degree(v):
 
     L = 2
     n_intervals = [L ** q for q in range(2, 10)]
-    n_nodes = 3
+    n_nodes = 4
     Y = [composite_quad(f, x0, x1, n_intervals=n, n_nodes=n_nodes,
                         a=a, b=b, alpha=alpha, beta=beta) for n in n_intervals]
     accuracy = get_log_error(Y, exact * np.ones_like(Y))
     x = np.log10(n_intervals)
     aitken_degree = aitken(*Y[5:8], L)
 
-    # plot acc
+    # plot ac
     plt.subplot(1, 2, 2)
     plt.plot(x, accuracy, 'kh')
     plt.xlabel('log10(node count)')

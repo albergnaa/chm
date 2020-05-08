@@ -1,6 +1,8 @@
 import numpy as np
 import math
 
+from utils.integrate_collection import Monome
+
 
 def moments(max_s, xl, xr, a=None, b=None, alpha=0.0, beta=0.0):
     """
@@ -135,13 +137,24 @@ def integrate(func, x0, x1, tol):
     h0 = x1 - x0
     r2 = 1
     while r2 > tol:
-        list = []
+        listOfResult = []
         h = []
         for i in range(3):
             h.append(h0 / L ** i)
             n = math.floor((x1 - x0) / h[i])
-            list.append(composite_quad(func, x0, x1, n, nodes))
-        m = aitken(list[0], list[1], list[2], L)
-        r1, r2 = runge(list[1], list[2], m, L)
+            listOfResult.append(composite_quad(func, x0, x1, n, nodes))
+        m = aitken(listOfResult[0], listOfResult[1], listOfResult[2], L)
+        r1, r2 = runge(listOfResult[1], listOfResult[2], m, L)
         h0 = h[2] * math.pow(tol / abs(r2), 1 / m)
-    return list[2], max(r2, tol)
+    return listOfResult[2], max(r2, tol)
+
+
+p = Monome(1)
+x0, x1 = 0, 1
+y0 = p[x0, x1]
+xs1 = np.linspace(x0, x1, 1)
+xs2 = [(x0+x1)/2]
+Y1 = quad(p, x0, x1, xs1)
+Y2 = quad(p, x0, x1, xs2)
+print("узел:", xs1, ", точное: ", y0, ", вычисленное:", Y1)
+print("узел:", xs2, ", точное: ", y0, ", вычисленное:", Y2)
