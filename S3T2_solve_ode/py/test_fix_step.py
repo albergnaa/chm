@@ -7,6 +7,7 @@ from utils.utils import get_log_error
 from S3T2_solve_ode.py.solve_ode import fix_step_integration
 from S3T2_solve_ode.py.one_step_methods import (
     ExplicitEulerMethod,
+    ImplicitEulerMethod,
     RungeKuttaMethod,
 )
 import S3T2_solve_ode.py.coeffs_collection as collection
@@ -34,6 +35,7 @@ def test_one_step():
     for i, method in enumerate(
             [
                 ExplicitEulerMethod(),
+                ImplicitEulerMethod(),
                 RungeKuttaMethod(collection.rk4_coeffs),
                 RungeKuttaMethod(collection.dopri_coeffs),
             ]

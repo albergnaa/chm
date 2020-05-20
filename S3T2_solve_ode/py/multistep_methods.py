@@ -19,4 +19,21 @@ def adams(func, y_start, T, coeffs, one_step_method: OneStepMethod):
     one_step_method: method for initial steps
     return list of t (same as T), list of y
     """
-    raise NotImplementedError
+
+    ys = [y_start]
+    n = len(coeffs)
+    F = []
+    for i, t in enumerate(T[0:n]):
+        y = ys[-1]
+        y1 = one_step_method.step(func, t, y, T[i + 1] - t)
+        ys.append(y1)
+        F.append(func(T[i + 1], y1))
+
+    for i, t in enumerate(T[n:-1]):
+        temp = 0
+        for j in range(0, n):
+            temp += coeffs[j] * F[i + j]
+        ys.append(ys[-1] + (T[n + i + 1] - t) * temp)
+        F.append(func(T[n + i + 1], ys[-1]))
+    return T, ys
+
